@@ -9,6 +9,3 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
         app_label = 'forum'
-
-    def get_dictionary(self):
-        return serializers.serialize('python', [self])[0].get('fields')

@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+import forum.views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # app related
+    url(r'^topics', forum.views.topics),
+    url(r'^threads', forum.views.topic_threads),
 ]
