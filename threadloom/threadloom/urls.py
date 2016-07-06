@@ -22,5 +22,31 @@ urlpatterns = [
 
     # app related
     url(r'^topics', forum.views.topics),
-    url(r'^threads', forum.views.topic_threads),
+    url(
+        r'^threads/'
+        r'(?P<topic>[0-9]+)/?$',
+        forum.views.topic_threads
+    ),
+    url(
+        r'^threads/',
+        forum.views.topic_threads
+    ),
+    url(
+        r'^posts/'
+        r'(?P<thread>[0-9]+)/?$',
+        forum.views.posts
+    ),
+    url(
+        r'^posts/',
+        forum.views.posts
+    ),
+    url(
+        r'^replies/'
+        r'(?P<post>[0-9]+)/?$',
+        forum.views.post_replies
+    ),
+    url(
+        r'^replies/',
+        forum.views.post_replies
+    ),
 ]

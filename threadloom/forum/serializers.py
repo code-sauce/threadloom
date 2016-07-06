@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from forum.models.forum import User, Topic, TopicThread
+from forum.models.forum import User, Topic, TopicThread, Post, PostReply
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class TopicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Topic
-        fields = ('title', 'creator', 'create_time', 'mod_time')
+        fields = ('id', 'title', 'creator', 'create_time', 'mod_time')
 
 
 class TopicThreadSerializer(serializers.ModelSerializer):
@@ -24,4 +24,24 @@ class TopicThreadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TopicThread
-        fields = ('title', 'creator', 'topic', 'create_time', 'mod_time')
+        fields = ('id', 'title', 'creator', 'topic', 'create_time', 'mod_time')
+
+
+class PostSerializer(serializers.ModelSerializer):
+    content = serializers.CharField()
+    author = UserSerializer()
+    topic_thread = TopicThreadSerializer()
+
+    class Meta:
+        model = Post
+        fields = ('id', 'content', 'author', 'topic_thread',  'create_time', 'mod_time')
+
+
+class PostReplySerializer(serializers.ModelSerializer):
+    content = serializers.CharField()
+    author = UserSerializer()
+    post = PostSerializer()
+
+    class Meta:
+        model = Post
+        fields = ('id', 'content', 'author', 'post',  'create_time', 'mod_time')
