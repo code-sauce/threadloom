@@ -27,14 +27,24 @@ class TopicThreadSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'creator', 'topic', 'create_time', 'mod_time')
 
 
+class PostReplySerializerNoRelated(serializers.ModelSerializer):
+    content = serializers.CharField()
+    author = UserSerializer()
+
+    class Meta:
+        model = PostReply
+        fields = ('id', 'content', 'author', 'create_time', 'mod_time')
+
+
 class PostSerializer(serializers.ModelSerializer):
     content = serializers.CharField()
     author = UserSerializer()
     topic_thread = TopicThreadSerializer()
+    replies = PostReplySerializerNoRelated(many=True)
 
     class Meta:
         model = Post
-        fields = ('id', 'content', 'author', 'topic_thread',  'create_time', 'mod_time')
+        fields = ('id', 'content', 'author', 'topic_thread', 'replies', 'create_time', 'mod_time')
 
 
 class PostReplySerializer(serializers.ModelSerializer):
@@ -43,5 +53,5 @@ class PostReplySerializer(serializers.ModelSerializer):
     post = PostSerializer()
 
     class Meta:
-        model = Post
+        model = PostReply
         fields = ('id', 'content', 'author', 'post',  'create_time', 'mod_time')

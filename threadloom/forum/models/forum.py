@@ -27,6 +27,10 @@ class Post(BaseModel):
     author = models.ForeignKey(User)
     topic_thread = models.ForeignKey(TopicThread)
 
+    @property
+    def replies(self):
+        return self.postreply_set.all()
+
 
 class PostReply(BaseModel):
     content = models.TextField()

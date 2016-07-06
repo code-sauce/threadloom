@@ -22,6 +22,7 @@ def topic_threads(request, topic=None):
 
 
 def posts(request, thread=None):
+    # gets the posts and the replies for this post(s)
     if not thread:
         all_posts = Post.objects.all()
     else:
@@ -37,3 +38,9 @@ def post_replies(request, post=None):
         all_posts = Post.objects.filter(id=post)
     posts_serialized = PostSerializer(all_posts, many=True)
     return JsonResponse({'OK': 1, 'posts': posts_serialized.data})
+
+
+# TODO
+# 1. create view to create a thread for a topic thread
+# 2. create a reply for a given post
+# 3. follow a user
