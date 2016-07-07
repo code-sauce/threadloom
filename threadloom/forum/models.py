@@ -1,19 +1,23 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from base import BaseModel
+
+
+# Create your models here.
+class BaseModel(models.Model):
+    create_time = models.DateTimeField(auto_now_add=True)
+    mod_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        app_label = ''
 
 
 class User(BaseModel):
-    user_id = models.CharField(max_length=40)
+    user_id = models.CharField(max_length=20)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email = models.EmailField()
-
-
-class FollowUser(BaseModel):
-    follower = models.ForeignKey(User, related_name='follower')
-    following = models.ForeignKey(User, related_name='following')
 
 
 class Topic(BaseModel):
@@ -32,12 +36,13 @@ class Post(BaseModel):
     author = models.ForeignKey(User)
     topic_thread = models.ForeignKey(TopicThread)
 
-    @property
-    def replies(self):
-        return self.postreply_set.all()
-
 
 class PostReply(BaseModel):
     content = models.TextField()
     author = models.ForeignKey(User)
     post = models.ForeignKey(Post)
+
+
+class FollowUser(BaseModel):
+    follower = models.ForeignKey(User)
+    following = models.ForeignKey(User)

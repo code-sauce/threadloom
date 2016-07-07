@@ -1,9 +1,11 @@
 from django.shortcuts import render, render_to_response
-from forum.models.forum import User, Topic, TopicThread, Post, PostReply
+from forum.models.forum import User, Topic, TopicThread, Post, PostReply, FollowUser
 from django.http import JsonResponse
 from forum.serializers import (
     TopicSerializer, TopicThreadSerializer, PostSerializer, PostReplySerializer
 )
+from django.views.decorators.csrf import csrf_exempt
+import uuid
 
 
 def topics(request):
@@ -12,7 +14,8 @@ def topics(request):
     return JsonResponse({'OK': 1, 'topics': topics_serialized.data})
 
 
-def topic_threads(request, topic=None):
+def topic_threads(request):
+    topic = request.GET.get('topic')
     if not topic:
         threads = TopicThread.objects.all()
     else:
@@ -21,14 +24,48 @@ def topic_threads(request, topic=None):
     return JsonResponse({'OK': 1, 'threads': threads_serialized.data})
 
 
-def posts(request, thread=None):
-    # gets the posts and the replies for this post(s)
-    if not thread:
-        all_posts = Post.objects.all()
+@csrf_exempt
+def posts(request):
+    if request.method == 'POST':
+        thread = request.POST.get('thread')
+        email = request.POST.get('email')
+        content = request.POST.get('content')
+        user = User.objects.filter(email=email)
+        if user:
+            user = user[0]
+        else:
+            user = User(user_id=str(uuid.uuid4()), email=email)
+            user.save()
+        thread = TopicThread.objects.get(id=thread)
+
+        Post(content=content, author=user, topic_thread=thread).save()
+        return JsonResponse({'OK': 1})
     else:
-        all_posts = Post.objects.filter(id=thread)
-    posts_serialized = PostSerializer(all_posts, many=True)
-    return JsonResponse({'OK': 1, 'posts': posts_serialized.data})
+        thread = request.GET.get('thread')
+        # gets the posts and the replies for this post(s)
+        if not thread:
+            all_posts = Post.objects.all()
+        else:
+            thread = TopicThread(id=thread)
+            all_posts = Post.objects.filter(topic_thread=thread)
+        posts_serialized = PostSerializer(all_posts, many=True)
+        return JsonResponse({'OK': 1, 'posts': posts_serialized.data})
+
+
+@csrf_exempt
+def add_reply(request):
+    post_id = request.POST.get('post_id')
+    content = request.POST.get('content')
+    email = request.POST.get('email')
+    user = User.objects.filter(email=email)
+    if user:
+        user = user[0]
+    else:
+        user = User(user_id=str(uuid.uuid4()), email=email)
+        user.save()
+    post = Post.objects.get(id=post_id)
+    PostReply(post=post, author=user, content=content).save()
+    return JsonResponse({'OK': 1})
 
 
 def post_replies(request, post=None):
@@ -40,7 +77,21 @@ def post_replies(request, post=None):
     return JsonResponse({'OK': 1, 'posts': posts_serialized.data})
 
 
-# TODO
-# 1. create view to create a thread for a topic thread
+@csrf_exempt
+def follow(request):
+    following_email = request.GET.get('following')
+    follower_email = request.GET.get('follower')
+    following = User.objects.get(email=following_email)
+    follower = User.objects.get(email=follower_email)
+    relation = FollowUser.objects.filter(follower=follower, following=following)
+    if relation:
+        return JsonResponse({'OK': 0})
+    FollowUser(follower=follower, following=following).save()
+    return JsonResponse({'OK': 1})
+
+
+def render_app(request):
+    return render_to_response('forum.html')
+
 # 2. create a reply for a given post
 # 3. follow a user

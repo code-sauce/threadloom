@@ -23,8 +23,7 @@ urlpatterns = [
     # app related
     url(r'^topics', forum.views.topics),
     url(
-        r'^threads/'
-        r'(?P<topic>[0-9]+)/?$',
+        r'^threads/?$',
         forum.views.topic_threads
     ),
     url(
@@ -32,8 +31,7 @@ urlpatterns = [
         forum.views.topic_threads
     ),
     url(
-        r'^posts/'
-        r'(?P<thread>[0-9]+)/?$',
+        r'^posts/?$',
         forum.views.posts
     ),
     url(
@@ -49,4 +47,19 @@ urlpatterns = [
         r'^replies/',
         forum.views.post_replies
     ),
+
+    url(
+        r'^reply/',
+        forum.views.add_reply
+    ),
+
+    url(
+        r'^follow/',
+        forum.views.follow
+    ),
+
+    url(
+        r'^forum/?$',
+        forum.views.render_app
+    )
 ]

@@ -1,0 +1,29 @@
+.tbl_forum {
+  border: solid;
+}
+
+.tbl_forum td {
+  border: groove;
+}
+
+.threads {
+  margin-left: 5%;
+}
+
+.posts {
+  margin-left: 10%;
+}
+
+.replies {
+  margin-left: 15%;
+}
+
+.noclear {
+  clear: none;
+  float: left;
+  margin: 5px 5px 5px 5px;
+}
+
+.clearboth {
+  clear: both;
+}

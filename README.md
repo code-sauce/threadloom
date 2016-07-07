@@ -16,4 +16,15 @@ pip install -r requirements.txt
 pm migrate --settings=threadloom.settings
 
 
+# React.js stuff
 
+## get npm
+
+## from the main project didrecotry, `npm install`
+
+
+
+#TODO
+
+## 1. change URLs to be more restful
+## 2. topic -> thread -> post
