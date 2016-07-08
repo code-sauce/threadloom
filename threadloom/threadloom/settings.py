@@ -87,7 +87,7 @@ DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'threadloom',
     'USER': 'dbuser',
-    'PASSWORD': 'Sh0pp3rM@n',
+    'PASSWORD': '<your password>',
     'HOST': 'localhost',
 }
 
