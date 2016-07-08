@@ -38,12 +38,17 @@ YOu basically click on topics > threads to browse stuff
 ###Models and back-end
 Django models and DRF (Django Rest Framework) was used to build the models.
 Ability to Follow another user is
-```/follow/?following=sjain@shoprunner.xom&follower=getsaurabhjain@gmail.com```
+
+```
+/follow/?following=sjain@shoprunner.xom&follower=getsaurabhjain@gmail.com
+```
 
 
 ###Analytics
+```
 /report/?report_date=2016-07-07
 currently shows data per day
+```
 
 the web page is at `/forum`
 
