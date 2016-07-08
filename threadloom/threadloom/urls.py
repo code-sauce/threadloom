@@ -59,6 +59,11 @@ urlpatterns = [
     ),
 
     url(
+        r'^report/',
+        forum.views.report
+    ),
+
+    url(
         r'^forum/?$',
         forum.views.render_app
     )

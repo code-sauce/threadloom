@@ -40,15 +40,32 @@ var Post = React.createClass({
     },
     handleAddReply: function(post_id) {
         console.log('adding reply to post: ' + post_id);
-        ForumAction.addReply(this.state.selectedTopicThread, post_id, this.state.replyContent, this.state.replyUser);
+        ForumAction.addReply(
+            this.state.selectedTopicThread,
+            post_id,
+            this.state.replyContent[post_id],
+            this.state.replyUser[post_id]
+        );
     },
-    onReplyContentChange: function (evt) {
+    onReplyContentChange: function (post_id, evt) {
+        console.log('onReplyContentChange for post: ' + post_id);
         var content = evt.target.value;
-        this.setState({replyContent: content});
+        if (!this.state.replyContent) {
+            this.setState({replyContent: {}});
+        }
+        var replyState = this.state.replyContent;
+        replyState[post_id] = content;
+        this.setState({replyContent: replyState});
     },
-    onReplyUserChange: function (evt) {
+    onReplyUserChange: function (post_id, evt) {
+        console.log('onReplyUserChange for post: ' + post_id);
         var content = evt.target.value;
-        this.setState({replyUser: content});
+        if (!this.state.replyUser) {
+            this.setState({replyUser: {}});
+        }
+        var replyState = this.state.replyUser;
+        replyState[post_id] = content;
+        this.setState({replyUser: replyState});
     },
 
     //add post functions
@@ -69,6 +86,12 @@ var Post = React.createClass({
         var that = this;
         var posts = this.state.posts.map(
             function (post) {
+                if(!that.state.replyContent) {
+                    that.setState({replyContent: {}});
+                }
+                if(!that.state.replyUser) {
+                    that.setState({replyUser: {}});
+                }
                 return (
                     <div>
                         <div className="posts" id={post.id} onClick={that.handlePostClick.bind(this, post.id)}>
@@ -89,8 +112,8 @@ var Post = React.createClass({
                                     );
                                 })
                             }
-                            <input type='text' className="newReply" placeholder="add reply.." name='newReply' value={that.state.replyContent} onChange={that.onReplyContentChange} />
-                            <input type='text' className="newReplyUser" placeholder="your email.." name='newReplyUser' value={that.state.replyUser} onChange={that.onReplyUserChange} />
+                            <input type='text' className="newReply" placeholder="add reply.." name='newReply' value={that.state.replyContent[post.id]} onChange={that.onReplyContentChange.bind(this, post.id)} />
+                            <input type='text' className="newReplyUser" placeholder="your email.." name='newReplyUser' value={that.state.replyUser[post.id]} onChange={that.onReplyUserChange.bind(this, post.id)} />
                             <div className="add-reply" onClick={that.handleAddReply.bind(this, post.id)}>+ Reply</div>
                         </div>
                     </div>

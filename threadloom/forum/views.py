@@ -1,9 +1,11 @@
 from django.shortcuts import render, render_to_response
 from forum.models.forum import User, Topic, TopicThread, Post, PostReply, FollowUser
 from django.http import JsonResponse
+from django.db.models.aggregates import Count
 from forum.serializers import (
     TopicSerializer, TopicThreadSerializer, PostSerializer, PostReplySerializer
 )
+from datetime import datetime, timedelta
 from django.views.decorators.csrf import csrf_exempt
 import uuid
 
@@ -90,8 +92,25 @@ def follow(request):
     return JsonResponse({'OK': 1})
 
 
+@csrf_exempt
+def report(request):
+    report_date = request.GET.get('report_date')
+    report_date = datetime.strptime(report_date, '%Y-%m-%d')
+    date_range = (
+        datetime.combine(report_date, datetime.min.time()),
+        datetime.combine(report_date, datetime.max.time())
+    )
+    total_posts = Post.objects.filter(create_time__range=date_range).count()
+    top_poster = User.objects.annotate(num_posts=Count('post')).order_by('-num_posts')[0]
+    return render_to_response(
+        'report.html',
+        context={
+            'report_date': report_date.strftime('%Y-%m-%d'),
+            'new_posts': total_posts,
+            'top_poster': "%s with %s posts" % (top_poster.email, top_poster.num_posts)
+        }
+    )
+
+
 def render_app(request):
     return render_to_response('forum.html')
-
-# 2. create a reply for a given post
-# 3. follow a user
